@@ -1,0 +1,3 @@
+- Use context in a repo's "ai-context" directory for all coding. If there is front matter, use the description and glob fields to determine if the current request is relevant to the context.
+- Use the code-standards.md file in the ai-context directory for coding standards and best practices. This is mandatory.
+- Before making any changes related to testing, the testing suite, or linting—including modifications to test/lint scripts, dependencies, or configuration in package.json—explicit user permission must be obtained.

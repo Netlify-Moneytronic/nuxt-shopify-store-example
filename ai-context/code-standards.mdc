@@ -1,0 +1,83 @@
+---
+description: Code standards and best practices for the Nuxt.js e-commerce project
+globs: **/*.{vue,js,ts,jsx,tsx}
+---
+
+# Code Standards and Best Practices
+
+## Linting and Formatting Requirements
+
+### ESLint Rules
+- All code MUST pass ESLint validation with zero errors or warnings
+- Run `pnpm lint` before committing code
+- Run `pnpm lint:fix` to automatically fix issues
+
+Key ESLint Rules to Follow:
+- Use TypeScript strict mode
+- Explicit return types for functions are required
+- No use of `any` type
+- Components must use multi-word names
+- Strict prop type checking is enforced
+- No console.log statements (only warn and error allowed)
+- Maximum line length of 100 characters
+- Use single quotes for strings
+- Always use semicolons
+- Use camelCase for variables and functions
+- Always use curly braces for control structures
+
+### Prettier Formatting
+- All code MUST be formatted using Prettier
+- Configuration is defined in `.prettierrc`
+
+Key Prettier Rules to Follow:
+- Tab Width: 2 spaces
+- Use single quotes
+- Add trailing commas in objects and arrays
+- Maximum line length: 100 characters
+- Use spaces between brackets
+- Always use parentheses with arrow functions
+- End files with a newline
+- Indent Vue script and style tags
+
+## Vue Component Standards
+- Follow Vue 3 Composition API best practices
+- Order component properties consistently:
+  1. name
+  2. components
+  3. props
+  4. emits
+  5. setup()
+
+## Import Order
+- Imports must be ordered as follows:
+  1. Built-in modules
+  2. External modules
+  3. Internal modules
+  4. Parent directory imports
+  5. Sibling and child imports
+- Add newlines between import groups
+- Alphabetize imports within groups
+
+## TypeScript Standards
+- Use strict type checking
+- Avoid type assertions unless absolutely necessary
+- Define explicit return types for functions
+- Use interfaces for object types
+- Use enums for fixed sets of values
+
+## Testing Requirements
+- All new features must include tests
+- Run tests before committing: `pnpm test:e2e`
+
+## Pre-commit Checklist
+1. Run ESLint: `pnpm lint`
+2. Apply Prettier formatting: through IDE or `prettier --write`
+3. Run tests: `pnpm test:e2e`
+4. Ensure no console.log statements remain
+5. Check for proper type definitions
+
+## IDE Configuration
+- Configure your IDE to:
+  - Format on save using Prettier
+  - Show ESLint errors and warnings
+  - Use TypeScript for type checking

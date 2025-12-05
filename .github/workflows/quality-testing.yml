@@ -1,0 +1,81 @@
+name: Quality Testing
+on: [push]
+
+jobs:
+  vitest-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for .windsurfrules file modifications
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            # For push events, check committed changes
+            if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '\.windsurfrules$'; then
+              echo "::error::The .windsurfrules file has been modified in this commit. Modifications to this file are not allowed."
+              exit 1
+            fi
+          else
+            # For other events (like pull_request), check staged and working tree changes
+            if git diff --name-only --staged | grep -q '\.windsurfrules$' || git diff --name-only | grep -q '\.windsurfrules$'; then
+              echo "::error::The .windsurfrules file has been modified. Modifications to this file are not allowed."
+              exit 1
+            fi
+          fi
+
+      - name: Check .windsurfrules is not in .gitignore
+        run: |
+          if grep -q '\.windsurfrules' .gitignore; then
+            echo "::error::The .windsurfrules file is listed in .gitignore. This file must remain tracked in the repository."
+            exit 1
+          fi
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.7.1
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-store
+        shell: bash
+        run: |
+          echo "dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-store.outputs.dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # Run linting first - will block subsequent steps if it fails
+      - name: Run linting
+        id: lint
+        run: pnpm lint
+
+      # Only run component tests if linting passes
+      - name: Run component tests
+        id: component-tests
+        run: pnpm test:component
+        env:
+          CI: true
+
+      # Trigger Netlify build only if both linting and component tests pass
+      # The if: success() condition ensures all previous steps must have succeeded
+      - name: Trigger Netlify build
+        if: success()
+        run: |
+          curl -X POST -d {} "${{ secrets.NETLIFY_BUILD_HOOK_URL }}"

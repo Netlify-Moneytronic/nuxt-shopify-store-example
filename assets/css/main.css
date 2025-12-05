@@ -1,0 +1,53 @@
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  overscroll-behavior: none;
+}
+
+.bg-gradient {
+  background: radial-gradient(100% 100% at 50% 50%, #ffffff, #97ffff); 
+  background-size: 400% 400%;
+  animation: gradientBg 30s ease infinite;
+}
+
+@keyframes gradientBg {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+:root {
+  --custom-blue: #97ffff;
+  --custom-pink: #ee82ee;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1) rotate(var(--rotation)); }
+  14% { transform: scale(1.1) rotate(var(--rotation)); }
+  28% { transform: scale(1) rotate(var(--rotation)); }
+  42% { transform: scale(1.15) rotate(var(--rotation)); }
+  70% { transform: scale(1) rotate(var(--rotation)); }
+}
+
+.spin-animation {
+  animation: spin 5s linear infinite;
+  --rotation: 0deg;
+}
+
+.spin-animation:hover {
+  animation: heartbeat 1s ease-in-out;
+  --rotation: calc(360deg * (var(--current-rotation, 0) / 360));
+}
+
+.mobile-menu {
+  backdrop-filter: blur(4px);
+  background-color: transparent;
+}
